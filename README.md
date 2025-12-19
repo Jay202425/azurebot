@@ -108,8 +108,22 @@ az webapp config appsettings set --name your-bot-name --resource-group your-reso
 
 4. Your bot will be available at: `https://your-bot-name.azurewebsites.net`
 
+## Environment Variables
+
+You can configure the application using these environment variables:
+
+- `FLASK_SECRET_KEY` - Secret key for Flask sessions (automatically generated if not set)
+- `AZURE_AI_ENDPOINT` - Azure AI Project endpoint URL (defaults to the configured endpoint)
+- `AZURE_AI_AGENT_NAME` - Name of the Azure AI agent (defaults to "bot")
+- `PORT` - Port number for the web server (defaults to 5000)
+
 ## Security Notes
 
-- The `FLASK_SECRET_KEY` should be set to a secure random value in production
+- The `FLASK_SECRET_KEY` is automatically generated using a secure random value if not provided
 - Ensure proper authentication is configured for Azure AI Projects
-- Consider adding rate limiting and authentication for production deployments
+- For production deployments, consider adding:
+  - CSRF protection (e.g., Flask-WTF)
+  - Rate limiting (e.g., Flask-Limiter)
+  - User authentication
+  - HTTPS enforcement
+  - Web Application Firewall (WAF)

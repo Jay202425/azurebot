@@ -10,10 +10,13 @@ import uuid
 import os
 
 app = Flask(__name__)
-app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'dev-secret-key-change-in-production')
+app.secret_key = os.environ.get('FLASK_SECRET_KEY', os.urandom(24).hex())
 
-# Azure AI Project endpoint
-myEndpoint = "https://foundarydec251219.services.ai.azure.com/api/projects/proj-default"
+# Azure AI Project endpoint (configurable via environment variable)
+myEndpoint = os.environ.get(
+    'AZURE_AI_ENDPOINT',
+    "https://foundarydec251219.services.ai.azure.com/api/projects/proj-default"
+)
 
 # Initialize the AI Project Client with DefaultAzureCredential
 project_client = AIProjectClient(
@@ -21,8 +24,8 @@ project_client = AIProjectClient(
     credential=DefaultAzureCredential(),
 )
 
-# Agent name
-myAgent = "bot"
+# Agent name (configurable via environment variable)
+myAgent = os.environ.get('AZURE_AI_AGENT_NAME', 'bot')
 
 # Get the agent
 try:
@@ -43,6 +46,10 @@ def home():
 def chat():
     """Handle chat messages"""
     try:
+        # Check if agent is available
+        if agent is None:
+            return jsonify({'error': 'Agent is not available. Please check your Azure configuration.'}), 503
+        
         data = request.get_json()
         user_message = data.get('message', '')
         
