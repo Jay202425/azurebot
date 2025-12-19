@@ -22,7 +22,39 @@ pip install -r requirements.txt
 
 ## Usage
 
-Run the bot:
+### Option 1: Web Application (Recommended for Sharing)
+
+Run the Flask web application to get a shareable link:
+
+```bash
+python app.py
+```
+
+The web application will start on `http://localhost:5000` (or the port specified in the `PORT` environment variable).
+
+**Features:**
+- 🌐 Web-based chat interface
+- 💬 Real-time conversation with Azure AI agent
+- 🔄 Session management with conversation threads
+- 📱 Responsive design for mobile and desktop
+- 🔗 Shareable link for clients
+
+**Deployment:**
+
+For production deployment, you can deploy to:
+- **Azure App Service**: Use the Azure Portal or Azure CLI
+- **Azure Container Instances**: Containerize with Docker
+- **Any cloud platform**: AWS, GCP, Heroku, etc.
+
+Example for local testing:
+```bash
+export PORT=8080
+python app.py
+```
+
+### Option 2: Command Line
+
+Run the bot from command line:
 
 ```bash
 python bot.py
@@ -49,6 +81,35 @@ Ensure you have one of these authentication methods configured before running th
 
 ## Files
 
-- `bot.py` - Main bot implementation
+- `app.py` - Flask web application with chat interface (for shareable link)
+- `bot.py` - Command-line bot implementation
+- `templates/index.html` - Web chat interface UI
 - `requirements.txt` - Python dependencies
 - `.gitignore` - Git ignore patterns for Python projects
+
+## Deployment to Azure App Service
+
+To deploy the web application to Azure App Service:
+
+1. Create an Azure App Service:
+```bash
+az webapp up --name your-bot-name --runtime PYTHON:3.11
+```
+
+2. Configure authentication (Managed Identity recommended):
+```bash
+az webapp identity assign --name your-bot-name --resource-group your-resource-group
+```
+
+3. Set environment variables:
+```bash
+az webapp config appsettings set --name your-bot-name --resource-group your-resource-group --settings FLASK_SECRET_KEY=your-secret-key
+```
+
+4. Your bot will be available at: `https://your-bot-name.azurewebsites.net`
+
+## Security Notes
+
+- The `FLASK_SECRET_KEY` should be set to a secure random value in production
+- Ensure proper authentication is configured for Azure AI Projects
+- Consider adding rate limiting and authentication for production deployments
